@@ -135,7 +135,7 @@ int main(void)
 	thrust::uniform_real_distribution<float> u01(0.0f, 1.0f);
 
 	// --- Allocate space for 3D points
-	thrust::device_vector<float3> d_points(N);
+	thrust::host_vector<float3> h_points(N);
 
 	// --- Allocate space for the Morton codes on the host and on the device
 	//pointCodeType *h_mortonCode		 = (pointCodeType *)malloc(N * sizeof(pointCodeType));
@@ -148,12 +148,12 @@ int main(void)
 		float x = u01(rng);
 		float y = u01(rng);
 		float z = u01(rng);
-		d_points[i] = make_float3(x, y, z);
+		h_points[i] = make_float3(x, y, z);
 		printf("%d\n", i);
 	}
 
 	// --- Move the points from device to host
-	thrust::host_vector<float3> h_points = d_points;
+	thrust::device_vector<float3> d_points = h_points;
 
 	// --- The initial bounding box contains the first point of the point cloud
 	bbox init = bbox(d_points[0], d_points[0]);
